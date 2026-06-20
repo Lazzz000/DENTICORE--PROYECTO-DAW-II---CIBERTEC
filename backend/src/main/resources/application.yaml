@@ -1,0 +1,51 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+
+spring:
+  application:
+    name: denticore-backend
+  
+  # ==========================================
+  # CONEXIÓN A POSTGRESQL (Docker)
+  # ==========================================
+  datasource:
+    url: jdbc:postgresql://localhost:5432/denticoredb
+    username: denticore_admin
+    password: rootpassword123
+    driver-class-name: org.postgresql.Driver
+
+  # ==========================================
+  # CONFIGURACIÓN DE HIBERNATE / JPA
+  # ==========================================
+  jpa:
+    hibernate:
+      ddl-auto: validate # Valida que Java y SQL coincidan. No altera la BD.
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: America/Lima
+
+  # ==========================================
+  # CONEXIÓN A RABBITMQ (Docker)
+  # ==========================================
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: denticore_mq
+    password: mqpassword123
+
+# ==========================================
+# CONFIGURACIÓN DE ACTUATOR (Métricas y Salud)
+# ==========================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
