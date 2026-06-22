@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.cibertec.denticore</groupId>
-	<artifactId>backend</artifactId>
+	<artifactId>DentiCoreApp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>backend</name>
+	<name>DentiCoreApp</name>
 	<description>Proyecto DentiCore 2.0</description>
 	<url/>
 	<licenses>
