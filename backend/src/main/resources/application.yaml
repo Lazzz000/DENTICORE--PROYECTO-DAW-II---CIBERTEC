@@ -49,3 +49,10 @@ management:
   endpoint:
     health:
       show-details: always
+
+# ==========================================
+# CONFIGURACIÓN JWT
+# ==========================================
+jwt:
+  secret: denticore-secret-key-2026-super-segura-32b
+  expiration: 86400000

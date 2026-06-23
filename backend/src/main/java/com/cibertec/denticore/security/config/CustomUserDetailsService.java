@@ -22,8 +22,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findByNombreUsuario(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
+        Usuario usuario = usuarioRepository.findByDni(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con DNI: " + username));
 
         List<UsuarioRol> rolesActivos = usuarioRolRepository.findByIdUsuario(usuario.getId());
 

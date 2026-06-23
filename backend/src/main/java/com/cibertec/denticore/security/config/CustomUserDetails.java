@@ -25,7 +25,8 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return usuario.getNombreUsuario();
+       // CRÍTICO: El token JWT debe guardar el DNI como Subject, no el nombre_usuario.
+        return usuario.getDni();
     }
 
     @Override
