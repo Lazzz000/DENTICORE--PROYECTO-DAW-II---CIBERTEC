@@ -1,0 +1,56 @@
+# ================================
+# VS Code
+# ================================
+.vscode
+!.vscodesettings.json
+!.vscodetasks.json
+!.vscodelaunch.json
+
+# ================================
+# IntelliJ IDEA  JetBrains
+# ================================
+.idea
+.iml
+.iws
+.ipr
+.idea
+
+# ================================
+# Eclipse
+# ================================
+.settings
+.classpath
+.project
+.factorypath
+
+# ================================
+# Maven
+# ================================
+backendtarget
+.jar
+.war
+.ear
+
+# ================================
+# Java
+# ================================
+.class
+.log
+.cache
+
+# ================================
+# Sistema Operativo
+# ================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ================================
+# Logs
+# ================================
+.log
+logs
+
+# Perfiles locales de Spring Boot (para no subir contraseñas reales)
+backend/src/main/resources/application-local.yml
+backend/src/main/resources/application-dev.yml
