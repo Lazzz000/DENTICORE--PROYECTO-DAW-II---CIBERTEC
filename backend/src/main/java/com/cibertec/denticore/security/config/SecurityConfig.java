@@ -4,8 +4,10 @@ import com.cibertec.denticore.security.filters.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +24,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -43,12 +46,14 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-           // CÓDIGO CORREGIDO
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**", "/catalogo/**").permitAll()
+                // 1. El Login y Registro SIEMPRE deben ser públicos (POST)
+                .requestMatchers("/auth/**").permitAll() // 
+                // 2. El Catálogo solo es público para lectura (GET)
+                .requestMatchers(HttpMethod.GET, "/catalogo/**").permitAll()
+                // 3. Todo lo demás requiere token
                 .anyRequest().authenticated()
             )
-            
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
