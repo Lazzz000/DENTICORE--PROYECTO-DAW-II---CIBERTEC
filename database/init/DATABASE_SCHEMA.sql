@@ -104,7 +104,10 @@ CREATE TABLE crm.cita (
     id_odontologo INT NOT NULL,
     id_lead_contacto INT,
     fecha_hora TIMESTAMP NOT NULL,
-    estado VARCHAR(20) NOT NULL CHECK (estado IN ('Cancelada', 'Atendida', 'EnSala', 'Confirmada', 'Pendiente')),
+    --CHECK ANTIGUO HEREDADO DE LA VERSION 1.0(C#-ASP.NET)
+    --estado VARCHAR(20) NOT NULL CHECK (estado IN ('Cancelada', 'Atendida', 'EnSala', 'Confirmada', 'Pendiente')),
+    --CHECK NUEVO VALIDADO CON LOGICA DE NEGOCIO DEPURADA
+    estado VARCHAR(20) NOT NULL CHECK (estado IN ('PENDIENTE', 'CONFIRMADA', 'EN_SALA', 'EN_CURSO', 'ATENDIDA', 'FINALIZADA', 'CANCELADA')),
     canal_origen VARCHAR(50) NOT NULL,
     monto_adelanto DECIMAL(10, 2) NOT NULL DEFAULT 0,
     referencia_adelanto VARCHAR(100),
