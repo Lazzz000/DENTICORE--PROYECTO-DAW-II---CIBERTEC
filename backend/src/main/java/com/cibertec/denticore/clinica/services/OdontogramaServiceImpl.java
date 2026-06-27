@@ -2,12 +2,14 @@ package com.cibertec.denticore.clinica.services;
 
 import com.cibertec.denticore.clinica.dto.request.DetalleOdontogramaDTO;
 import com.cibertec.denticore.clinica.dto.request.GuardarOdontogramaRequestDTO;
+import com.cibertec.denticore.clinica.dto.response.DetalleHistorialDTO;
 import com.cibertec.denticore.clinica.entities.AtencionClinica;
 import com.cibertec.denticore.clinica.entities.DetalleOdontograma;
 import com.cibertec.denticore.clinica.entities.ElementoOdontograma;
 import com.cibertec.denticore.clinica.entities.HistoriaClinica;
 import com.cibertec.denticore.clinica.entities.Odontograma;
 import com.cibertec.denticore.clinica.repositories.AtencionClinicaRepository;
+import com.cibertec.denticore.clinica.repositories.DetalleOdontogramaRepository;
 import com.cibertec.denticore.clinica.repositories.ElementoOdontogramaRepository;
 import com.cibertec.denticore.clinica.repositories.OdontogramaRepository;
 import com.cibertec.denticore.crm.entities.Cita;
@@ -19,6 +21,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OdontogramaServiceImpl implements OdontogramaService {
@@ -28,6 +33,7 @@ public class OdontogramaServiceImpl implements OdontogramaService {
     private final AtencionClinicaRepository atencionClinicaRepository;
     private final OdontogramaRepository odontogramaRepository;
     private final ElementoOdontogramaRepository elementoOdontogramaRepository;
+    private final DetalleOdontogramaRepository detalleOdontogramaRepository;
 
     @Override
     @Transactional
@@ -79,5 +85,23 @@ public class OdontogramaServiceImpl implements OdontogramaService {
 
         cita.setEstado(EstadoCita.ATENDIDA);
         citaRepository.save(cita);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DetalleHistorialDTO> obtenerHistorialPaciente(Integer idPaciente) {
+        return detalleOdontogramaRepository.findHistorialByPacienteId(idPaciente).stream()
+                .map(this::mapearHistorial)
+                .toList();
+    }
+
+    private DetalleHistorialDTO mapearHistorial(DetalleOdontograma detalle) {
+        DetalleHistorialDTO dto = new DetalleHistorialDTO();
+        dto.setNumeroPieza(detalle.getNumeroPieza());
+        dto.setDiagnostico(detalle.getDiagnostico());
+        dto.setEstadoTratamiento(detalle.getEstadoTratamiento());
+        dto.setFechaAtencion(detalle.getOdontograma().getAtencionClinica().getFechaAtencion());
+        dto.setTipoOdontograma(detalle.getOdontograma().getTipo());
+        return dto;
     }
 }
