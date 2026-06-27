@@ -1,0 +1,258 @@
+<div class="min-h-screen bg-surface-main text-ink">
+  <header class="fixed left-0 top-0 z-50 w-full border-b border-surface-border bg-white/85 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <div class="flex items-center gap-3">
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-ink text-white shadow-sm">
+          <lucide-icon [img]="Stethoscope" class="h-5 w-5"></lucide-icon>
+        </div>
+        <div>
+          <h1 class="text-lg font-semibold tracking-tight">DentiCore</h1>
+          <p class="text-xs text-ink-muted">Clínica Dental Premium</p>
+        </div>
+      </div>
+
+      <nav class="hidden items-center gap-8 text-sm text-ink-muted md:flex">
+        <a href="#servicios" class="transition hover:text-primary">Servicios</a>
+        <a href="#especialidades" class="transition hover:text-primary">Especialidades</a>
+        <a href="#doctores" class="transition hover:text-primary">Doctores</a>
+        <a href="#beneficios" class="transition hover:text-primary">Beneficios</a>
+      </nav>
+
+      <a routerLink="/login" class="hidden rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-primary-hover md:inline-flex">
+        Ingresar al sistema
+      </a>
+    </div>
+  </header>
+
+  <section class="relative overflow-hidden bg-white pb-24 pt-32">
+    <div class="absolute inset-0 bg-gradient-to-br from-white via-surface-soft/40 to-surface-main"></div>
+    <div class="absolute -top-32 right-0 h-[520px] w-[520px] rounded-full bg-surface-soft opacity-70 blur-3xl"></div>
+
+    <div class="relative mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-2">
+      <div class="z-10">
+        <span class="inline-flex items-center gap-2 rounded-full border border-surface-border bg-white px-4 py-2 text-sm font-medium text-primary shadow-sm">
+          <lucide-icon [img]="Sparkles" class="h-4 w-4"></lucide-icon>
+
+            <span>
+                Atención dental moderna y personalizada
+            </span>
+        </span>
+
+        <h2 class="mt-6 text-4xl font-semibold leading-tight tracking-tight md:text-6xl">
+          Cuida tu sonrisa con una experiencia dental premium
+        </h2>
+
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-ink-muted">
+          Tecnología, especialistas certificados y un sistema de atención pensado para que cada paciente reciba un servicio rápido, seguro y humano.
+        </p>
+
+        <div class="mt-8 flex flex-col gap-4 sm:flex-row">
+          <a routerLink="/login" class="rounded-xl bg-primary px-6 py-3 text-center font-medium text-white shadow-sm transition hover:bg-primary-hover">
+            Reservar cita
+          </a>
+          <a href="#servicios" class="rounded-xl border border-surface-border bg-white px-6 py-3 text-center font-medium transition hover:shadow-card">
+            Ver servicios
+          </a>
+        </div>
+
+        <div class="mt-10 max-w-xl rounded-3xl bg-ink p-6 text-white shadow-xl">
+          <div class="grid grid-cols-3 gap-6">
+            <div>
+              <p class="text-2xl font-semibold">12+</p>
+              <p class="text-sm text-white/70">Años</p>
+            </div>
+            <div>
+              <p class="text-2xl font-semibold">8k+</p>
+              <p class="text-sm text-white/70">Pacientes</p>
+            </div>
+            <div>
+              <p class="text-2xl font-semibold">98%</p>
+              <p class="text-sm text-white/70">Satisfacción</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative flex min-h-[540px] items-center justify-center">
+        <img
+          src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1400&q=80"
+          alt="Clínica dental moderna"
+          class="h-[540px] w-full max-w-[640px] rounded-[2.5rem] object-cover object-center"
+        />
+
+        <div class="absolute right-4 top-10 rounded-2xl border border-surface-border bg-white/90 p-4 shadow-card backdrop-blur-xl">
+            <lucide-icon [img]="UserCheck" class="h-5 w-5 mb-2"></lucide-icon>
+            <p class="text-sm font-semibold">Doctor disponible</p>
+          <p class="text-xs text-ink-muted">Atención hoy</p>
+        </div>
+
+        <div class="absolute bottom-16 left-3 max-w-[260px] rounded-2xl bg-ink p-5 text-white shadow-xl">
+          <lucide-icon [img]="CalendarCheck" class="h-5 w-5 mb-2"></lucide-icon>
+          <p class="text-sm font-semibold">Citas rápidas</p>
+          <p class="text-xs text-white/70">Reserva en minutos</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="servicios" class="py-20">
+    <div class="mx-auto max-w-7xl px-6">
+      <div class="max-w-2xl">
+        <p class="font-medium text-primary">Servicios</p>
+        <h3 class="mt-2 text-3xl font-semibold md:text-4xl">Atención dental integral</h3>
+        <p class="mt-4 text-ink-muted">Soluciones modernas para prevención, estética y tratamientos especializados.</p>
+      </div>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        <div class="rounded-3xl border border-surface-border bg-surface-card p-7 transition hover:-translate-y-1 hover:shadow-card">
+          <lucide-icon
+                [img]="Smile"
+                class="h-8 w-8 mb-4 text-primary">
+            </lucide-icon>
+          <h4 class="font-semibold text-lg">Odontología general</h4>
+          <p class="mt-3 text-sm leading-relaxed text-ink-muted">Evaluaciones, limpiezas, curaciones y prevención.</p>
+        </div>
+
+        <div class="rounded-3xl border border-ink bg-ink p-7 text-white transition hover:-translate-y-1 hover:shadow-card">
+         <lucide-icon
+                [img]="Sparkles"
+                class="h-8 w-8 mb-4">
+            </lucide-icon> 
+          <h4 class="font-semibold text-lg">Estética dental</h4>
+          <p class="mt-3 text-sm leading-relaxed text-white/70">Blanqueamientos, carillas y diseño de sonrisa.</p>
+        </div>
+
+        <div class="rounded-3xl border border-surface-border bg-surface-soft p-7 transition hover:-translate-y-1 hover:shadow-card">
+            <lucide-icon
+                [img]="ShieldCheck"
+                class="h-8 w-8 mb-4 text-primary">
+            </lucide-icon>
+          <h4 class="font-semibold text-lg">Tratamientos especializados</h4>
+          <p class="mt-3 text-sm leading-relaxed text-ink-muted">Ortodoncia, endodoncia, periodoncia e implantes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="especialidades" class="bg-ink py-20 text-white">
+    <div class="mx-auto max-w-7xl px-6">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="font-medium text-primary">Especialidades</p>
+        <h3 class="mt-2 text-3xl font-semibold md:text-4xl">Todo en un solo lugar</h3>
+        <p class="mt-4 text-white/70">Un equipo preparado para acompañarte en cada etapa de tu tratamiento.</p>
+      </div>
+
+      <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="rounded-3xl border border-white/10 bg-white/5 p-6">Ortodoncia</div>
+        <div class="rounded-3xl border border-white/10 bg-white/5 p-6">Implantes</div>
+        <div class="rounded-3xl border border-white/10 bg-white/5 p-6">Endodoncia</div>
+        <div class="rounded-3xl border border-white/10 bg-white/5 p-6">Periodoncia</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="doctores" class="py-20">
+    <div class="mx-auto max-w-7xl px-6">
+      <p class="font-medium text-primary">Especialistas</p>
+      <h3 class="mt-2 text-3xl font-semibold md:text-4xl">Doctores con experiencia</h3>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        <div class="overflow-hidden rounded-3xl border border-surface-border bg-white transition hover:-translate-y-1 hover:shadow-card">
+          <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80" class="h-72 w-full object-cover" alt="Doctora dental">
+          <div class="p-6">
+            <h4 class="text-lg font-semibold">Dra. Valeria Ríos</h4>
+            <p class="mt-1 text-sm text-primary">Ortodoncia</p>
+          </div>
+        </div>
+
+        <div class="overflow-hidden rounded-3xl border border-surface-border bg-white transition hover:-translate-y-1 hover:shadow-card">
+          <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80" class="h-72 w-full object-cover" alt="Doctor dental">
+          <div class="p-6">
+            <h4 class="text-lg font-semibold">Dr. Mateo Salazar</h4>
+            <p class="mt-1 text-sm text-primary">Implantología</p>
+          </div>
+        </div>
+
+        <div class="overflow-hidden rounded-3xl border border-surface-border bg-white transition hover:-translate-y-1 hover:shadow-card">
+          <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=600&q=80" class="h-72 w-full object-cover" alt="Doctora dental">
+          <div class="p-6">
+            <h4 class="text-lg font-semibold">Dra. Camila Torres</h4>
+            <p class="mt-1 text-sm text-primary">Estética dental</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="beneficios" class="border-y border-surface-border bg-white py-20">
+    <div class="mx-auto grid max-w-7xl items-center gap-14 px-6 lg:grid-cols-2">
+      <div>
+        <p class="font-medium text-primary">Beneficios</p>
+        <h3 class="mt-2 text-3xl font-semibold md:text-4xl">Una experiencia pensada para el paciente</h3>
+        <p class="mt-4 leading-relaxed text-ink-muted">
+          Desde la reserva de citas hasta el seguimiento de tratamientos, cada paso está diseñado para ser claro, rápido y cómodo.
+        </p>
+
+        <div class="mt-8 space-y-5">
+          <p>✓ Ambientes modernos y equipamiento actualizado.</p>
+          <p>✓ Historial clínico organizado y seguimiento continuo.</p>
+          <p>✓ Atención personalizada según cada tratamiento.</p>
+        </div>
+      </div>
+
+      <div class="rounded-[2rem] border border-surface-border bg-surface-main p-8">
+        <div class="grid grid-cols-2 gap-5">
+          <div class="rounded-3xl bg-ink p-6 text-white">
+            <p class="text-3xl font-semibold">24h</p>
+            <p class="mt-2 text-sm text-white/70">Recordatorio de citas</p>
+          </div>
+          <div class="rounded-3xl border border-surface-border bg-surface-soft p-6">
+            <p class="text-3xl font-semibold">100%</p>
+            <p class="mt-2 text-sm text-ink-muted">Historial digital</p>
+          </div>
+          <div class="rounded-3xl border border-surface-border bg-white p-6">
+            <p class="text-3xl font-semibold">+15</p>
+            <p class="mt-2 text-sm text-ink-muted">Tratamientos</p>
+          </div>
+          <div class="rounded-3xl border border-surface-border bg-white p-6">
+            <p class="text-3xl font-semibold">4.9</p>
+            <p class="mt-2 text-sm text-ink-muted">Valoración promedio</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cta" class="py-20">
+    <div class="mx-auto max-w-7xl px-6">
+      <div class="relative overflow-hidden rounded-[2rem] bg-ink p-10 text-center text-white md:p-14">
+        <h3 class="text-3xl font-semibold md:text-5xl">Empieza hoy tu tratamiento dental</h3>
+        <p class="mx-auto mt-5 max-w-2xl text-white/70">
+          Agenda una evaluación y recibe una atención moderna, clara y profesional.
+        </p>
+
+        <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+          <a routerLink="/login" class="rounded-xl bg-primary px-7 py-3 font-medium text-white transition hover:bg-primary-hover">
+            Reservar una cita
+          </a>
+          <a href="#servicios" class="rounded-xl border border-white/15 bg-white/10 px-7 py-3 font-medium text-white transition hover:bg-white/15">
+            Conocer servicios
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-surface-border bg-white">
+    <div class="mx-auto flex max-w-7xl flex-col justify-between gap-6 px-6 py-10 md:flex-row">
+      <div>
+        <h4 class="font-semibold">DentiCore</h4>
+        <p class="mt-2 text-sm text-ink-muted">Clínica Dental Moderna</p>
+      </div>
+
+      <div class="text-sm text-ink-muted">
+        © 2026 DentiCore. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+</div>

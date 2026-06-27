@@ -1,0 +1,204 @@
+<div>
+      <h1 class="text-2xl font-bold text-ink">Dashboard</h1>
+      <p class="text-sm text-ink-muted">Resumen del la aplicaición</p>
+      <br>
+    </div>
+<div class="flex flex-col gap-6">
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="flex items-start justify-between rounded-2xl border border-surface-border bg-white p-5 shadow-card transition-all hover:shadow-md">
+      <div class="flex flex-col gap-1">
+        <span class="text-xs font-medium text-ink-muted">Pacientes activos</span>
+        <span class="text-2xl font-bold tracking-tight text-ink">{{ totalPacientes() }}</span>
+        <div class="mt-1 flex items-center gap-1 text-xs font-medium text-status-success">
+          <lucide-icon [img]="TrendingUp" class="h-3 w-3"></lucide-icon>
+          <span>Todos los Pacientes</span>
+        </div>
+      </div>
+
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-soft text-primary">
+        <lucide-icon [img]="Users" class="h-5 w-5"></lucide-icon>
+      </div>
+    </div>
+
+    <div class="flex items-start justify-between rounded-2xl border border-surface-border bg-white p-5 shadow-card transition-all hover:shadow-md">
+      <div class="flex flex-col gap-1">
+        <span class="text-xs font-medium text-ink-muted">Odontólogos activos</span>
+        <span class="text-2xl font-bold tracking-tight text-ink">{{ totalOdontologos() }}</span>
+        <div class="mt-1 flex items-center gap-1 text-xs font-medium text-status-success">
+          <lucide-icon [img]="CheckCircle" class="h-3 w-3"></lucide-icon>
+          <span>Usuarios clínicos</span>
+        </div>
+      </div>
+
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-soft text-primary">
+        <lucide-icon [img]="Stethoscope" class="h-5 w-5"></lucide-icon>
+      </div>
+    </div>
+
+    <div class="flex items-start justify-between rounded-2xl border border-surface-border bg-white p-5 shadow-card transition-all hover:shadow-md">
+      <div class="flex flex-col gap-1">
+        <span class="text-xs font-medium text-ink-muted">Especialidades</span>
+        <span class="text-2xl font-bold tracking-tight text-ink">{{ totalEspecialidades() }}</span>
+        <div class="mt-1 flex items-center gap-1 text-xs font-medium text-status-warning">
+          <lucide-icon [img]="Clock" class="h-3 w-3"></lucide-icon>
+          <span>Catálogo clínico</span>
+        </div>
+      </div>
+
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-main text-primary">
+        <lucide-icon [img]="Calendar" class="h-5 w-5"></lucide-icon>
+      </div>
+    </div>
+
+    <div class="flex items-start justify-between rounded-2xl border border-surface-border bg-white p-5 shadow-card transition-all hover:shadow-md">
+      <div class="flex flex-col gap-1">
+        <span class="text-xs font-medium text-ink-muted">Items catálogo</span>
+        <span class="text-2xl font-bold tracking-tight text-ink">{{ totalItems() }}</span>
+        <div class="mt-1 flex items-center gap-1 text-xs font-medium text-status-success">
+          <lucide-icon [img]="TrendingUp" class="h-3 w-3"></lucide-icon>
+          <span>Servicios/productos</span>
+        </div>
+      </div>
+
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-soft text-primary">
+        <lucide-icon [img]="DollarSign" class="h-5 w-5"></lucide-icon>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+    <div class="flex flex-col rounded-2xl border border-surface-border bg-white p-5 shadow-card lg:col-span-2">
+      <div class="mb-4 flex items-center justify-between border-b border-surface-border pb-2">
+        <h2 class="text-base font-bold tracking-tight text-ink">Actividad reciente</h2>
+        <span class="cursor-pointer text-xs font-medium text-primary hover:underline">Ver todo</span>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        @for (actividad of actividades(); track actividad.titulo) {
+          <div class="flex items-start gap-3.5">
+            <div class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-soft text-primary">
+              <lucide-icon [img]="actividad.tipo === 'pago' ? CreditCard : actividad.tipo === 'cita' ? Calendar : UserPlus" class="h-4 w-4"></lucide-icon>
+            </div>
+
+            <div class="flex flex-1 flex-col">
+              <span class="text-sm font-medium text-ink">{{ actividad.titulo }}</span>
+              <span class="text-xs text-ink-muted">{{ actividad.descripcion }}</span>
+            </div>
+
+            <span class="shrink-0 text-xs text-ink-muted">{{ actividad.tiempo }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-col rounded-2xl border border-surface-border bg-white p-5 shadow-card">
+      <div class="mb-4 flex items-center justify-between border-b border-surface-border pb-2">
+        <h2 class="text-base font-bold tracking-tight text-ink">Citas del día</h2>
+        <span class="rounded-full bg-surface-main px-2 py-0.5 text-xs font-semibold text-ink-muted">Hoy</span>
+      </div>
+
+      <div class="flex flex-col gap-3.5">
+        @for (cita of citasDelDia(); track cita.hora) {
+          <div class="flex items-center justify-between rounded-xl border border-surface-border bg-surface-main p-2.5">
+            <div class="flex flex-col">
+              <span class="text-xs font-bold text-primary">{{ cita.hora }}</span>
+              <span class="mt-0.5 text-sm font-semibold text-ink">{{ cita.paciente }}</span>
+              <span class="text-xs text-ink-muted">{{ cita.detalle }}</span>
+            </div>
+
+            <span class="rounded-md border px-2 py-0.5 text-[11px] font-medium" [class]="cita.estadoClase">
+              {{ cita.estado }}
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+    <div class="flex flex-col rounded-2xl border border-surface-border bg-white p-5 shadow-card">
+      <h2 class="mb-3 border-b border-surface-border pb-2 text-base font-bold tracking-tight text-ink">Pacientes recientes</h2>
+
+      <table class="w-full text-left text-sm">
+        <thead>
+          <tr class="border-b border-surface-border text-[11px] uppercase text-ink-muted">
+            <th class="pb-2 font-semibold">Nombre</th>
+            <th class="pb-2 font-semibold">Última visita</th>
+            <th class="pb-2 text-right font-semibold">Estado</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-surface-border/50">
+          <tr>
+            <td class="py-2.5 font-medium text-ink">Elena Rostova</td>
+            <td class="py-2.5 text-xs text-ink-muted">24 Jun 2026</td>
+            <td class="py-2.5 text-right">
+              <span class="rounded-md bg-green-50 px-1.5 py-0.5 text-[11px] text-status-success">Activo</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="py-2.5 font-medium text-ink">Jorge Peralta</td>
+            <td class="py-2.5 text-xs text-ink-muted">22 Jun 2026</td>
+            <td class="py-2.5 text-right">
+              <span class="rounded-md bg-green-50 px-1.5 py-0.5 text-[11px] text-status-success">Activo</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex flex-col justify-between rounded-2xl border border-surface-border bg-white p-5 shadow-card">
+      <div>
+        <h2 class="mb-1 text-base font-bold tracking-tight text-ink">Ventas del mes</h2>
+        <div class="mt-1 flex items-baseline gap-2">
+          <span class="text-3xl font-extrabold tracking-tight text-primary">S/ {{ ingresosFake() }}</span>
+          <span class="text-xs font-medium text-status-success">Meta 85%</span>
+        </div>
+      </div>
+
+      <div class="mt-4 flex flex-col gap-2">
+        <div class="flex items-center justify-between border-b border-surface-border/50 py-1.5 text-xs">
+          <div class="flex flex-col">
+            <span class="font-medium text-ink">Inicial Implantes</span>
+            <span class="text-[10px] text-ink-muted">ID #10240</span>
+          </div>
+          <span class="rounded-md border border-green-200 bg-green-50 px-2 py-0.5 font-semibold text-status-success">Pagado</span>
+        </div>
+
+        <div class="flex items-center justify-between border-b border-surface-border/50 py-1.5 text-xs">
+          <div class="flex flex-col">
+            <span class="font-medium text-ink">Prótesis Removible</span>
+            <span class="text-[10px] text-ink-muted">ID #10239</span>
+          </div>
+          <span class="rounded-md border border-orange-200 bg-orange-50 px-2 py-0.5 font-semibold text-status-warning">Parcial</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col rounded-2xl border border-surface-border bg-white p-5 shadow-card">
+      <h2 class="mb-4 border-b border-surface-border pb-2 text-base font-bold tracking-tight text-ink">Accesos rápidos</h2>
+
+      <div class="grid flex-1 grid-cols-2 gap-3">
+        <button class="group flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-surface-border bg-surface-main p-3 text-center transition-all duration-200 hover:border-primary/30 hover:bg-surface-soft">
+          <lucide-icon [img]="UserPlus" class="h-5 w-5 text-primary"></lucide-icon>
+          <span class="text-xs font-semibold text-ink">Nuevo paciente</span>
+        </button>
+
+        <button class="group flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-surface-border bg-surface-main p-3 text-center transition-all duration-200 hover:border-primary/30 hover:bg-surface-soft">
+          <lucide-icon [img]="Calendar" class="h-5 w-5 text-primary"></lucide-icon>
+          <span class="text-xs font-semibold text-ink">Agendar cita</span>
+        </button>
+
+        <button class="group flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-surface-border bg-surface-main p-3 text-center transition-all duration-200 hover:border-primary/30 hover:bg-surface-soft">
+          <lucide-icon [img]="FileText" class="h-5 w-5 text-status-success"></lucide-icon>
+          <span class="text-xs font-semibold text-ink">Registrar atención</span>
+        </button>
+
+        <button class="group flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-surface-border bg-surface-main p-3 text-center transition-all duration-200 hover:border-primary/30 hover:bg-surface-soft">
+          <lucide-icon [img]="ShoppingCart" class="h-5 w-5 text-status-warning"></lucide-icon>
+          <span class="text-xs font-semibold text-ink">Registrar venta</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
