@@ -6,6 +6,11 @@ Todo enrutamiento debe utilizar exclusivamente la función `loadComponent` combi
 
 ## 2. Definición de Rutas y Capas de Seguridad (Guards)
 
+### 2.0 Capa Pública Comercial:
+* **Ruta:** `/`
+* **Componente:** `LandingComponent` (`features/landing/landing.component.ts`)
+* **Regla de Seguridad: Acceso público. Sin guardias.** 
+
 ### 2.1. Capa Pública (Autenticación)
 * **Ruta Base:** `/login`
 * **Componente:** `LoginComponent` (`features/auth/login.component.ts`)
@@ -45,8 +50,14 @@ import { authGuard } from './core/auth/auth.guard';
 import { roleGuard } from './core/auth/role.guard';
 
 export const routes: Routes = [
-  // 1. Redirección por defecto
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  // 1. Redirección por defecto de la raíz al componente landing
+  { path: '', redirectTo: 'landing', pathMatch: 'full' },
+
+  // 1.1. Ruta pública de la Landing Page
+  { 
+    path: 'landing', 
+    loadComponent: () => import('./features/landing/landing.component').then(m => m.LandingComponent) 
+  },
 
   // 2. Módulo Público
   { 
@@ -82,6 +93,6 @@ export const routes: Routes = [
     ]
   },
 
-  // 5. Fallback - Ruta no encontrada
-  { path: '**', redirectTo: 'login' }
+  // 5. Fallback: Cualquier ruta inexistente redirige a la Landing
+  { path: '**', redirectTo: 'landing' }
 ];
