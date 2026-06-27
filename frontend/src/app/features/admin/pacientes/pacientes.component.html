@@ -1,0 +1,142 @@
+<section class="space-y-6">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-ink">Pacientes</h1>
+      <p class="text-sm text-ink-muted">Listado y registro de pacientes activos</p>
+    </div>
+
+    <button
+      type="button"
+      (click)="abrirModal()"
+      class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-primary-hover"
+    >
+      <lucide-icon [img]="Plus" class="h-4 w-4"></lucide-icon>
+      Nuevo paciente
+    </button>
+  </div>
+
+  <div class="flex items-center justify-between rounded-2xl border border-surface-border bg-white p-4 shadow-card">
+    <div class="relative w-full max-w-sm">
+      <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-ink-muted">
+        <lucide-icon [img]="Search" class="h-4 w-4"></lucide-icon>
+      </div>
+
+      <input
+        type="text"
+        placeholder="Buscar paciente..."
+        class="w-full rounded-xl border border-surface-border bg-surface-main py-2 pl-9 pr-4 text-sm text-ink transition focus:border-primary focus:bg-white focus:outline-none"
+      />
+    </div>
+  </div>
+
+  @if (cargando()) {
+    <p class="text-sm text-ink-muted">Cargando pacientes...</p>
+  }
+
+  @if (error()) {
+    <div class="rounded-xl bg-status-error/10 p-4 text-sm text-status-error">
+      {{ error() }}
+    </div>
+  }
+
+  <div class="overflow-hidden rounded-2xl border border-surface-border bg-surface-card shadow-card">
+    <table class="w-full text-left text-sm">
+      <thead class="border-b border-surface-border bg-surface-main text-ink-muted">
+        <tr>
+          <th class="px-5 py-4">ID</th>
+          <th class="px-5 py-4">Nombres</th>
+          <th class="px-5 py-4">Apellidos</th>
+          <th class="px-5 py-4">DNI</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (paciente of pacientes(); track paciente.id) {
+          <tr class="border-b border-surface-border transition hover:bg-surface-main/70 last:border-0">
+            <td class="px-5 py-4 font-medium text-ink">{{ paciente.id }}</td>
+            <td class="px-5 py-4">{{ paciente.nombres }}</td>
+            <td class="px-5 py-4">{{ paciente.apellidos || '-' }}</td>
+            <td class="px-5 py-4">{{ paciente.dni || '-' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" class="px-5 py-8 text-center text-ink-muted">
+              No hay pacientes activos.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (modalAbierto()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 px-4 backdrop-blur-sm">
+      <div class="w-full max-w-2xl rounded-2xl border border-surface-border bg-white shadow-xl">
+        <div class="flex items-center justify-between border-b border-surface-border px-6 py-4">
+          <div>
+            <h2 class="text-lg font-bold text-ink">Nuevo paciente</h2>
+            <p class="text-sm text-ink-muted">Registra un nuevo acceso para el paciente</p>
+          </div>
+
+          <button
+            type="button"
+            (click)="cerrarModal()"
+            class="rounded-xl p-2 text-ink-muted transition hover:bg-surface-main hover:text-ink"
+          >
+            <lucide-icon [img]="X" class="h-5 w-5"></lucide-icon>
+          </button>
+        </div>
+
+        <form [formGroup]="pacienteForm" (ngSubmit)="registrarPaciente()" class="space-y-5 p-6">
+          <div class="grid gap-4 md:grid-cols-2">
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-ink">DNI</label>
+              <input formControlName="dni" class="w-full rounded-xl border border-surface-border bg-surface-main px-4 py-2.5 text-sm focus:border-primary focus:bg-white focus:outline-none" />
+            </div>
+
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-ink">Correo</label>
+              <input formControlName="correo" type="email" class="w-full rounded-xl border border-surface-border bg-surface-main px-4 py-2.5 text-sm focus:border-primary focus:bg-white focus:outline-none" />
+            </div>
+
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-ink">Nombres</label>
+              <input formControlName="nombres" class="w-full rounded-xl border border-surface-border bg-surface-main px-4 py-2.5 text-sm focus:border-primary focus:bg-white focus:outline-none" />
+            </div>
+
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-ink">Apellidos</label>
+              <input formControlName="apellidos" class="w-full rounded-xl border border-surface-border bg-surface-main px-4 py-2.5 text-sm focus:border-primary focus:bg-white focus:outline-none" />
+            </div>
+
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-ink">Contraseña</label>
+              <input formControlName="password" type="password" class="w-full rounded-xl border border-surface-border bg-surface-main px-4 py-2.5 text-sm focus:border-primary focus:bg-white focus:outline-none" />
+            </div>
+
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-ink">Fecha nacimiento</label>
+              <input formControlName="fechaNacimiento" type="date" class="w-full rounded-xl border border-surface-border bg-surface-main px-4 py-2.5 text-sm focus:border-primary focus:bg-white focus:outline-none" />
+            </div>
+
+            <div class="md:col-span-2">
+              <label class="mb-1.5 block text-sm font-medium text-ink">Grupo sanguíneo</label>
+              <input formControlName="grupoSanguineo" placeholder="Ej: O+, A-, B+" class="w-full rounded-xl border border-surface-border bg-surface-main px-4 py-2.5 text-sm focus:border-primary focus:bg-white focus:outline-none" />
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 border-t border-surface-border pt-5">
+            <button type="button" (click)="cerrarModal()" class="rounded-xl border border-surface-border px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-surface-main">
+              Cancelar
+            </button>
+
+            <button type="submit" [disabled]="guardando()" class="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary-hover disabled:opacity-60">
+              <lucide-icon [img]="UserPlus" class="h-4 w-4"></lucide-icon>
+              {{ guardando() ? 'Registrando...' : 'Registrar paciente' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</section>
