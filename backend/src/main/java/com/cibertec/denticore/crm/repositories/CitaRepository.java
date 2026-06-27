@@ -1,6 +1,8 @@
 package com.cibertec.denticore.crm.repositories;
 
 import com.cibertec.denticore.crm.entities.Cita;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,4 +20,29 @@ public interface CitaRepository extends JpaRepository<Cita, Integer> {
     boolean existsByOdontologoAndFechaHoraAndEstadoOcupado(
             @Param("idOdontologo") Integer idOdontologo,
             @Param("fechaHora") LocalDateTime fechaHora);
+
+    @Query(value = "SELECT c FROM Cita c " +
+                   "JOIN FETCH c.paciente p " +
+                   "JOIN FETCH p.usuario " +
+                   "JOIN FETCH c.odontologo o " +
+                   "JOIN FETCH o.usuario " +
+                   "WHERE c.fechaHora BETWEEN :inicio AND :fin " +
+                   "ORDER BY c.fechaHora ASC",
+           countQuery = "SELECT COUNT(c) FROM Cita c WHERE c.fechaHora BETWEEN :inicio AND :fin")
+    Page<Cita> findByFechaHoraBetweenOrderByFechaHoraAsc(
+            @Param("inicio") LocalDateTime inicio,
+            @Param("fin") LocalDateTime fin,
+            Pageable pageable);
+
+    @Query(value = "SELECT c FROM Cita c " +
+                   "JOIN FETCH c.paciente p " +
+                   "JOIN FETCH p.usuario " +
+                   "JOIN FETCH c.odontologo o " +
+                   "JOIN FETCH o.usuario " +
+                   "WHERE c.fechaHora >= :fechaInicio " +
+                   "ORDER BY c.fechaHora ASC",
+           countQuery = "SELECT COUNT(c) FROM Cita c WHERE c.fechaHora >= :fechaInicio")
+    Page<Cita> findByFechaHoraGreaterThanEqualOrderByFechaHoraAsc(
+            @Param("fechaInicio") LocalDateTime fechaInicio,
+            Pageable pageable);
 }

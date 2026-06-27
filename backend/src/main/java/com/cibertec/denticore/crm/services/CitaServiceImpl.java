@@ -1,6 +1,8 @@
 package com.cibertec.denticore.crm.services;
 
+import com.cibertec.denticore.crm.dto.request.ActualizarEstadoDTO;
 import com.cibertec.denticore.crm.dto.request.CitaRequestDTO;
+import com.cibertec.denticore.crm.dto.response.CitaListadoDTO;
 import com.cibertec.denticore.crm.dto.response.CitaResponseDTO;
 import com.cibertec.denticore.crm.entities.Cita;
 import com.cibertec.denticore.crm.enums.EstadoCita;
@@ -10,10 +12,15 @@ import com.cibertec.denticore.security.entities.Paciente;
 import com.cibertec.denticore.security.repositories.OdontologoRepository;
 import com.cibertec.denticore.security.repositories.PacienteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +59,31 @@ public class CitaServiceImpl implements CitaService {
         return mapearRespuesta(guardada, "Cita programada correctamente");
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CitaListadoDTO> listarAgendaDiaria(LocalDate fecha, Pageable pageable) {
+        LocalDate fechaConsulta = fecha != null ? fecha : LocalDate.now();
+        LocalDateTime inicio = fechaConsulta.atStartOfDay();
+        LocalDateTime fin = fechaConsulta.atTime(LocalTime.MAX);
+
+        Page<Cita> citas = citaRepository.findByFechaHoraBetweenOrderByFechaHoraAsc(inicio, fin, pageable);
+
+        return citas.map(this::mapearCitaListado);
+    }
+
+    @Override
+    @Transactional
+    public CitaResponseDTO actualizarEstado(Integer idCita, ActualizarEstadoDTO dto) {
+        Cita cita = citaRepository.findById(idCita)
+                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+
+        cita.setEstado(dto.getEstado());
+
+        Cita actualizada = citaRepository.save(cita);
+
+        return mapearRespuesta(actualizada, "Estado de cita actualizado");
+    }
+
     private Paciente obtenerPaciente(CitaRequestDTO dto, String dniUsuarioAutenticado) {
         if (dto.getIdPaciente() != null) {
             return pacienteRepository.findById(dto.getIdPaciente())
@@ -60,6 +92,22 @@ public class CitaServiceImpl implements CitaService {
 
         return pacienteRepository.findByUsuarioDni(dniUsuarioAutenticado)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado para el usuario autenticado"));
+    }
+
+    private CitaListadoDTO mapearCitaListado(Cita cita) {
+        CitaListadoDTO dto = new CitaListadoDTO();
+        dto.setIdCita(cita.getId());
+        dto.setFechaHora(cita.getFechaHora());
+        dto.setIdPaciente(cita.getPaciente().getUsuario().getId());
+        dto.setPacienteNombreCompleto(
+                cita.getPaciente().getUsuario().getNombres() + " " + cita.getPaciente().getUsuario().getApellidos());
+        dto.setPacienteDni(cita.getPaciente().getUsuario().getDni());
+        dto.setIdOdontologo(cita.getOdontologo().getUsuario().getId());
+        dto.setOdontologoNombre(
+                cita.getOdontologo().getUsuario().getNombres() + " " + cita.getOdontologo().getUsuario().getApellidos());
+        dto.setEstado(cita.getEstado().name());
+        dto.setMontoAdelanto(cita.getMontoAdelanto());
+        return dto;
     }
 
     private CitaResponseDTO mapearRespuesta(Cita cita, String mensaje) {
