@@ -12,8 +12,9 @@ import java.util.List;
 @Repository
 public interface UsuarioRolRepository extends JpaRepository<UsuarioRol, UsuarioRol.UsuarioRolId> {
 
-    @Query("SELECT ur FROM UsuarioRol ur WHERE ur.id.idUsuario = :idUsuario AND ur.activo = true")
+    @Query("SELECT ur FROM UsuarioRol ur JOIN FETCH ur.rol WHERE ur.id.idUsuario = :idUsuario AND ur.activo = true")
     List<UsuarioRol> findByIdUsuario(@Param("idUsuario") Integer idUsuario);
+    
 
     @Query("SELECT ur.usuario FROM UsuarioRol ur WHERE ur.rol.nombre = :nombreRol AND ur.usuario.activo = true AND ur.activo = true")
     List<Usuario> findUsuariosByRolNombreAndActivoTrue(@Param("nombreRol") String nombreRol);
