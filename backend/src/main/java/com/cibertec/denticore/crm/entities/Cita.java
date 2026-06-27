@@ -1,9 +1,9 @@
 package com.cibertec.denticore.crm.entities;
 
+import com.cibertec.denticore.crm.enums.EstadoCita;
 import com.cibertec.denticore.security.entities.Odontologo;
 import com.cibertec.denticore.security.entities.Paciente;
 import jakarta.persistence.*;
-import lombok.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -32,8 +32,9 @@ public class Cita {
     @Column(name = "fecha_hora", nullable = false)
     private LocalDateTime fechaHora;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private String estado; // 'Pendiente', 'Confirmada', 'Cancelada', 'Atendida'
+    private EstadoCita estado;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_lead_contacto")
