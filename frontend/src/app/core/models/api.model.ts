@@ -28,10 +28,12 @@ export interface DetalleOdontograma {
   diagnostico: string;
 }
 
-export interface GuardarOdontogramaRequest {
-  idAtencionClinica: number;
-  tipo: string;
-  detalles: DetalleOdontograma[];
+export interface RegistrarAtencionRequest {
+  idCita: number;
+  motivoConsulta: string;
+  notasClinicas: string;
+  tipoOdontograma: string;
+  detalles: DetalleOdontogramaRequest[];
 }
 
 export interface ItemCarrito {
@@ -113,4 +115,28 @@ export interface PageResponse<T> {
   totalPages: number;
   size: number;
   number: number;
+}
+
+//Odontograma
+export interface DetalleOdontogramaRequest {
+  idElementoClinico: number;
+  numeroPieza: number;
+  diagnostico: string;
+  estadoTratamiento: string;
+}
+
+export interface GuardarOdontogramaRequest {
+  idCita: number;
+  motivoConsulta: string;
+  notasClinicas: string;
+  tipoOdontograma: string;
+  detalles: DetalleOdontogramaRequest[];
+}
+
+export interface DetalleHistorial {
+  numeroPieza: number;
+  diagnostico: string;
+  estadoTratamiento: string;
+  fechaAtencion: string;
+  tipoOdontograma: string;
 }

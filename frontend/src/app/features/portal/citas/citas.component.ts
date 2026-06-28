@@ -181,5 +181,14 @@ registrarCita(): void {
   });
 }
 
+    irFacturacion(cita: CitaListadoDTO): void {
+  this.router.navigate(['/admin/facturacion', cita.idCita], {
+    queryParams: {
+      idPaciente: cita.idPaciente,
+      paciente: cita.pacienteNombreCompleto,
+      dni: cita.pacienteDni
+    }
+  });
+}
 
 }

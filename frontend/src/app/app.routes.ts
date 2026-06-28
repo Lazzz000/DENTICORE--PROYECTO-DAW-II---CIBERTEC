@@ -36,7 +36,11 @@ export const routes: Routes = [
       { path: 'pacientes', loadComponent: () => import('./features/admin/pacientes/pacientes.component').then(m => m.PacientesComponent) },
       { path: 'odontograma/:idCita', loadComponent: () => import('./features/admin/odontograma/odontograma.component').then(m => m.OdontogramaComponent) },
       { path: 'facturacion/:idCita', loadComponent: () => import('./features/admin/facturacion/facturacion.component').then(m => m.FacturacionComponent) },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {
+        path: 'ventas',
+        loadComponent: () => import('./features/admin/ventas/ventas.component').then(m => m.VentasComponent)
+      },
     ]
   },
   {

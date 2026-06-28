@@ -165,12 +165,21 @@
             Finalizar
           </button>
         }
-
-        @if (cita.estado === 'ATENDIDA' && rolActual() !== 'ODONTOLOGO') {
-          <span class="text-xs font-medium text-status-success">
-            Lista para facturar
+        
+                @if (cita.estado === 'FINALIZADA' && rolActual() !== 'ODONTOLOGO') {
+          <span class="text-xs font-medium text-ink-muted">
+            Facturada
           </span>
         }
+            @if (cita.estado === 'ATENDIDA' && rolActual() !== 'ODONTOLOGO') {
+        <button
+          type="button"
+          (click)="irFacturacion(cita)"
+          class="rounded-lg bg-status-success px-3 py-1.5 text-xs font-medium text-white transition"
+        >
+          Facturar
+        </button>
+      }
 
         @if (cita.estado === 'FINALIZADA') {
           <span class="text-xs font-medium text-ink-muted">

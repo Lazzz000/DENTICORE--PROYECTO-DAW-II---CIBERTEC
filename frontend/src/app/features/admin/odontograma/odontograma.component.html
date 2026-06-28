@@ -1,0 +1,171 @@
+<section class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-ink">Odontograma</h1>
+      <p class="text-sm text-ink-muted">Registro rápido de atención clínica</p>
+    </div>
+
+    <button
+      type="button"
+      (click)="volver()"
+      class="rounded-xl border border-surface-border bg-white px-4 py-2 text-sm font-medium text-ink hover:bg-surface-main"
+    >
+      Volver
+    </button>
+  </div>
+
+  <div class="rounded-2xl border border-surface-border bg-white p-5 shadow-card">
+    <h2 class="mb-4 text-lg font-bold text-ink">Paciente</h2>
+
+    <div class="grid gap-4 md:grid-cols-3">
+      <div>
+        <p class="text-xs text-ink-muted">ID cita</p>
+        <p class="font-semibold text-ink">{{ idCita }}</p>
+      </div>
+
+      <div>
+        <p class="text-xs text-ink-muted">Paciente</p>
+        <p class="font-semibold text-ink">{{ paciente }}</p>
+      </div>
+
+      <div>
+        <p class="text-xs text-ink-muted">DNI</p>
+        <p class="font-semibold text-ink">{{ dni }}</p>
+      </div>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="rounded-xl bg-status-error/10 p-4 text-sm text-status-error">
+      {{ error() }}
+    </div>
+  }
+
+  @if (exito()) {
+    <div class="rounded-xl bg-status-success/10 p-4 text-sm text-status-success">
+      {{ exito() }}
+    </div>
+  }
+
+  <div class="grid gap-6 lg:grid-cols-3">
+    <div class="space-y-5 rounded-2xl border border-surface-border bg-white p-5 shadow-card lg:col-span-2">
+      <div>
+        <h2 class="text-lg font-bold text-ink">Atención clínica</h2>
+        <p class="text-sm text-ink-muted">Completa los datos principales de la atención.</p>
+      </div>
+
+      <div class="grid gap-4">
+        <div>
+          <label class="mb-1 block text-sm font-medium text-ink">Motivo de consulta</label>
+          <input
+            type="text"
+            [(ngModel)]="request.motivoConsulta"
+            class="w-full rounded-xl border border-surface-border px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+            placeholder="Ej. Dolor dental"
+          />
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-ink">Notas clínicas</label>
+          <textarea
+            [(ngModel)]="request.notasClinicas"
+            rows="3"
+            class="w-full rounded-xl border border-surface-border px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+            placeholder="Observaciones del odontólogo"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-ink">Tipo de odontograma</label>
+          <select
+            [(ngModel)]="request.tipoOdontograma"
+            class="w-full rounded-xl border border-surface-border px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+          >
+            <option value="Inicial">Inicial</option>
+            <option value="Evolución">Evolución</option>
+            <option value="Control">Control</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-surface-border bg-surface-main p-4">
+        <h3 class="mb-3 font-semibold text-ink">Detalle del tratamiento</h3>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <div>
+            <label class="mb-1 block text-sm font-medium text-ink">Pieza dental</label>
+            <input
+              type="number"
+              [(ngModel)]="request.detalles[0].numeroPieza"
+              class="w-full rounded-xl border border-surface-border px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="mb-1 block text-sm font-medium text-ink">Elemento clínico</label>
+            <select
+              [(ngModel)]="request.detalles[0].idElementoClinico"
+              class="w-full rounded-xl border border-surface-border px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+            >
+              <option [ngValue]="1">Caries</option>
+              <option [ngValue]="2">Curación</option>
+              <option [ngValue]="3">Limpieza</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="mb-1 block text-sm font-medium text-ink">Diagnóstico</label>
+            <input
+              type="text"
+              [(ngModel)]="request.detalles[0].diagnostico"
+              class="w-full rounded-xl border border-surface-border px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+              placeholder="Ej. Caries moderada"
+            />
+          </div>
+
+          <div>
+            <label class="mb-1 block text-sm font-medium text-ink">Estado tratamiento</label>
+            <select
+              [(ngModel)]="request.detalles[0].estadoTratamiento"
+              class="w-full rounded-xl border border-surface-border px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+            >
+              <option value="Pendiente">Pendiente</option>
+              <option value="Realizado">Realizado</option>
+              <option value="En seguimiento">En seguimiento</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end">
+        <button
+          type="button"
+          (click)="guardarAtencion()"
+          [disabled]="guardando()"
+          class="rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-60"
+        >
+          {{ guardando() ? 'Guardando...' : 'Guardar atención' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-surface-border bg-white p-5 shadow-card">
+      <h2 class="text-lg font-bold text-ink">Historial</h2>
+      <p class="mb-4 text-sm text-ink-muted">Últimos registros del paciente</p>
+
+      @if (cargando()) {
+        <p class="text-sm text-ink-muted">Cargando historial...</p>
+      }
+
+      @for (item of historial(); track $index) {
+        <div class="mb-3 rounded-xl border border-surface-border p-3">
+          <p class="text-sm font-semibold text-ink">Pieza {{ item.numeroPieza }}</p>
+          <p class="text-xs text-ink-muted">{{ item.diagnostico }}</p>
+          <p class="mt-1 text-xs text-primary">{{ item.estadoTratamiento }}</p>
+        </div>
+      } @empty {
+        <p class="text-sm text-ink-muted">Sin historial registrado.</p>
+      }
+    </div>
+  </div>
+</section>
