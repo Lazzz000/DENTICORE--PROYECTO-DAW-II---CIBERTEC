@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { inject } from '@angular/core';
+import { Router , RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+
 import {
   BarChart3,
   Calendar,
@@ -35,4 +38,34 @@ export class AdminLayoutComponent {
   readonly LogOut = LogOut;
   readonly Search = Search;
   readonly Plus = Plus;
+
+
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+
+  cerrarSesion(): void {
+  this.authService.logoutBackend().subscribe({
+    next: () => {
+      this.authService.cerrarSesion();
+      this.router.navigate(['/login']);
+    },
+    error: () => {
+      this.authService.cerrarSesion();
+      this.router.navigate(['/login']);
+    }
+  });
+}   
+
+    
+
+        rolActual = this.authService.rol;
+
+        esAdmin(): boolean {
+          return this.rolActual() === 'ADMIN';
+        }
+
+        esOdontologo(): boolean {
+          return this.rolActual() === 'ODONTOLOGO';
+        }
+
 }

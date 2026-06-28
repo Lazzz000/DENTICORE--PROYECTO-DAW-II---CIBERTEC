@@ -16,7 +16,7 @@ public interface CitaRepository extends JpaRepository<Cita, Integer> {
     @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Cita c " +
            "WHERE c.odontologo.idUsuario = :idOdontologo " +
            "AND c.fechaHora = :fechaHora " +
-           "AND c.estado IN ('PENDIENTE', 'CONFIRMADA', 'EN_SALA', 'EN_CURSO')")
+           "AND c.estado IN ('PENDIENTE', 'CONFIRMADA', 'EN_SALA_DE_ESPERA', 'ENVIADO_A_CONSULTORIO', 'EN_CURSO')")
     boolean existsByOdontologoAndFechaHoraAndEstadoOcupado(
             @Param("idOdontologo") Integer idOdontologo,
             @Param("fechaHora") LocalDateTime fechaHora);
@@ -45,4 +45,22 @@ public interface CitaRepository extends JpaRepository<Cita, Integer> {
     Page<Cita> findByFechaHoraGreaterThanEqualOrderByFechaHoraAsc(
             @Param("fechaInicio") LocalDateTime fechaInicio,
             Pageable pageable);
+
+
+        @Query(value = "SELECT c FROM Cita c " +
+               "JOIN FETCH c.paciente p " +
+               "JOIN FETCH p.usuario " +
+               "JOIN FETCH c.odontologo o " +
+               "JOIN FETCH o.usuario " +
+               "WHERE c.odontologo.id = :idOdontologo " +
+               "AND c.fechaHora BETWEEN :inicio AND :fin " +
+               "ORDER BY c.fechaHora ASC",
+       countQuery = "SELECT COUNT(c) FROM Cita c " +
+                    "WHERE c.odontologo.id = :idOdontologo " +
+                    "AND c.fechaHora BETWEEN :inicio AND :fin")
+        Page<Cita> findAgendaDiariaByOdontologo(
+                @Param("idOdontologo") Integer idOdontologo,
+                @Param("inicio") LocalDateTime inicio,
+                @Param("fin") LocalDateTime fin,
+                Pageable pageable);
 }

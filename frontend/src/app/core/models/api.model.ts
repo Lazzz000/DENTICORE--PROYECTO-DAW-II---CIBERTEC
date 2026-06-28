@@ -17,6 +17,9 @@ export interface AgendarCitaRequest {
   idPaciente: number;
   idOdontologo: number;
   fechaHora: string;
+  canalOrigen: string;
+  montoAdelanto: number;
+  referenciaAdelanto?: string;
 }
 
 export interface DetalleOdontograma {
@@ -25,10 +28,12 @@ export interface DetalleOdontograma {
   diagnostico: string;
 }
 
-export interface GuardarOdontogramaRequest {
-  idAtencionClinica: number;
-  tipo: string;
-  detalles: DetalleOdontograma[];
+export interface RegistrarAtencionRequest {
+  idCita: number;
+  motivoConsulta: string;
+  notasClinicas: string;
+  tipoOdontograma: string;
+  detalles: DetalleOdontogramaRequest[];
 }
 
 export interface ItemCarrito {
@@ -70,3 +75,68 @@ export interface RegistroPacienteRequest {
 export interface PacienteActivo extends UsuarioLigero {}
 
 export interface OdontologoActivo extends UsuarioLigero {}
+
+//Creacion de modelo para citas
+export type EstadoCita =
+  | 'PENDIENTE'
+  | 'CONFIRMADA'
+  | 'EN_SALA'
+  | 'EN_CURSO'
+  | 'ATENDIDA'
+  | 'FINALIZADA'
+  | 'CANCELADA';
+
+export interface CitaListadoDTO {
+  idCita: number;
+  fechaHora: string;
+  idPaciente: number;
+  pacienteNombreCompleto: string;
+  pacienteDni: string;
+  idOdontologo: number;
+  odontologoNombre: string;
+  estado: EstadoCita;
+  montoAdelanto: number;
+}
+
+export interface CitaResponseDTO {
+  id: number;
+  estado: EstadoCita;
+  fechaHora: string;
+  mensaje: string;
+}
+
+export interface ActualizarEstadoDTO {
+  estado: EstadoCita;
+}
+
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}
+
+//Odontograma
+export interface DetalleOdontogramaRequest {
+  idElementoClinico: number;
+  numeroPieza: number;
+  diagnostico: string;
+  estadoTratamiento: string;
+}
+
+export interface GuardarOdontogramaRequest {
+  idCita: number;
+  motivoConsulta: string;
+  notasClinicas: string;
+  tipoOdontograma: string;
+  detalles: DetalleOdontogramaRequest[];
+}
+
+export interface DetalleHistorial {
+  numeroPieza: number;
+  diagnostico: string;
+  estadoTratamiento: string;
+  fechaAtencion: string;
+  tipoOdontograma: string;
+}
