@@ -7,6 +7,9 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { UsuarioService } from '../../../core/services/usuario.service';
 import { AgendarCitaRequest,CitaListadoDTO,EstadoCita,OdontologoActivo,PacienteActivo } from '../../../core/models/api.model';
+import { ToastService } from '../../../core/services/toast.service';
+import { ConfirmService } from '../../../core/services/confirm.service';
+
 
 @Component({
   selector: 'app-citas',
@@ -16,12 +19,14 @@ import { AgendarCitaRequest,CitaListadoDTO,EstadoCita,OdontologoActivo,PacienteA
 })
 export class CitasComponent {
 
-
+    private readonly toastService = inject(ToastService);
     private readonly router = inject(Router);
-
     private readonly authService = inject(AuthService);
     rolActual = this.authService.rol;   
+
     private readonly citaService = inject(CitaService);
+    private readonly confirmService = inject(ConfirmService);
+
 
     readonly Calendar = Calendar;
     readonly Clock = Clock;
@@ -81,19 +86,54 @@ export class CitasComponent {
 
   
 
-atenderCita(cita: CitaListadoDTO): void {
-  this.citaService.actualizarEstado(cita.idCita, 'EN_CURSO').subscribe({
-    next: () => this.listarCitas(),
-    error: () => this.error.set('No se pudo iniciar la atención.')
+  atenderCita(cita: CitaListadoDTO): void {
+  if (this.hayCitaEnCurso()) {
+    this.toastService.warning('Ya existe una atención en curso. Finaliza el odontograma antes de atender otro paciente.');
+    return;
+  }
+
+  this.confirmService.abrir({
+    titulo: 'Iniciar atención',
+    mensaje: `¿Deseas iniciar la atención de ${cita.pacienteNombreCompleto}?`,
+    textoConfirmar: 'Sí, atender',
+    textoCancelar: 'Cancelar',
+    tipo: 'info',
+    onConfirmar: () => {
+      this.citaService.actualizarEstado(cita.idCita, 'EN_CURSO').subscribe({
+        next: () => {
+          this.toastService.success('Atención iniciada correctamente.');
+          this.listarCitas();
+        },
+        error: () => {
+          this.toastService.error('No se pudo iniciar la atención.');
+          this.error.set('No se pudo iniciar la atención.');
+        }
+      });
+    }
   });
 }
 
   cambiarEstado(idCita: number, estado: EstadoCita): void {
-    this.citaService.actualizarEstado(idCita, estado).subscribe({
-      next: () => this.listarCitas(),
-      error: () => this.error.set('No se pudo actualizar el estado de la cita.')
-    });
-  }
+  this.confirmService.abrir({
+    titulo: 'Cambiar estado',
+    mensaje: `¿Deseas cambiar la cita a "${this.textoEstado(estado)}"?`,
+    textoConfirmar: 'Sí, cambiar',
+    textoCancelar: 'Cancelar',
+    tipo: 'warning',
+    onConfirmar: () => {
+      this.citaService.actualizarEstado(idCita, estado).subscribe({
+        next: () => {
+          this.toastService.success('Estado actualizado correctamente.');
+          this.listarCitas();
+        },
+        error: () => {
+          this.toastService.error('No se pudo actualizar el estado.');
+          this.error.set('No se pudo actualizar el estado de la cita.');
+        }
+      });
+    }
+  });
+}
 
   totalPorEstado(estado: EstadoCita): number {
     return this.citas().filter(cita => cita.estado === estado).length;
@@ -156,6 +196,8 @@ registrarCita(): void {
 
   this.citaService.agendar(this.nuevaCita).subscribe({
     next: () => {
+
+      this.toastService.success('Cita registrada correctamente');
       this.cerrarModalNuevaCita();
       this.nuevaCita = {
         idPaciente: 0,
@@ -167,7 +209,7 @@ registrarCita(): void {
       };
       this.listarCitas();
     },
-    error: () => this.error.set('No se pudo registrar la cita.')
+    error: () => this.toastService.error('No se pudo registrar la cita.')
   });
   }
 
@@ -189,6 +231,10 @@ registrarCita(): void {
       dni: cita.pacienteDni
     }
   });
+} 
+
+  hayCitaEnCurso(): boolean {
+  return this.citas().some(cita => cita.estado === 'EN_CURSO');
 }
 
 }
