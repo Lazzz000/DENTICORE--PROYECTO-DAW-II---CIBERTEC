@@ -70,3 +70,44 @@ export interface RegistroPacienteRequest {
 export interface PacienteActivo extends UsuarioLigero {}
 
 export interface OdontologoActivo extends UsuarioLigero {}
+
+//Creacion de modelo para citas
+export type EstadoCita =
+  | 'PENDIENTE'
+  | 'CONFIRMADA'
+  | 'EN_SALA'
+  | 'EN_CURSO'
+  | 'ATENDIDA'
+  | 'FINALIZADA'
+  | 'CANCELADA';
+
+export interface CitaListadoDTO {
+  idCita: number;
+  fechaHora: string;
+  idPaciente: number;
+  pacienteNombreCompleto: string;
+  pacienteDni: string;
+  idOdontologo: number;
+  odontologoNombre: string;
+  estado: EstadoCita;
+  montoAdelanto: number;
+}
+
+export interface CitaResponseDTO {
+  id: number;
+  estado: EstadoCita;
+  fechaHora: string;
+  mensaje: string;
+}
+
+export interface ActualizarEstadoDTO {
+  estado: EstadoCita;
+}
+
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}

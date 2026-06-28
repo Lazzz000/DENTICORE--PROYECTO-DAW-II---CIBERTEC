@@ -1,0 +1,160 @@
+<section class="space-y-6">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-ink">Agenda de citas</h1>
+      <p class="text-sm text-ink-muted">Gestión diaria de pacientes y estados de atención</p>
+    </div>
+
+    <button
+      type="button"
+      (click)="listarCitas()"
+      class="inline-flex items-center justify-center gap-2 rounded-xl border border-surface-border bg-white px-4 py-2.5 text-sm font-medium text-ink shadow-sm transition hover:bg-surface-main"
+    >
+      <lucide-icon [img]="RefreshCcw" class="h-4 w-4"></lucide-icon>
+      Actualizar
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div class="rounded-2xl border border-surface-border bg-white p-5 shadow-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-ink-muted">Citas del día</p>
+          <p class="mt-1 text-2xl font-bold text-ink">{{ citas().length }}</p>
+        </div>
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-soft text-primary">
+          <lucide-icon [img]="Calendar" class="h-5 w-5"></lucide-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-surface-border bg-white p-5 shadow-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-ink-muted">Pendientes</p>
+          <p class="mt-1 text-2xl font-bold text-ink">{{ totalPorEstado('PENDIENTE') }}</p>
+        </div>
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-status-warning">
+          <lucide-icon [img]="Clock" class="h-5 w-5"></lucide-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-surface-border bg-white p-5 shadow-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-ink-muted">En atención</p>
+          <p class="mt-1 text-2xl font-bold text-ink">{{ totalPorEstado('EN_CURSO') }}</p>
+        </div>
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-soft text-primary">
+          <lucide-icon [img]="UserCheck" class="h-5 w-5"></lucide-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (cargando()) {
+    <p class="text-sm text-ink-muted">Cargando agenda...</p>
+  }
+
+  @if (error()) {
+    <div class="rounded-xl bg-status-error/10 p-4 text-sm text-status-error">
+      {{ error() }}
+    </div>
+  }
+
+  <div class="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card">
+    <table class="w-full text-left text-sm">
+      <thead class="border-b border-surface-border bg-surface-main text-ink-muted">
+        <tr>
+          <th class="px-5 py-4">Hora</th>
+          <th class="px-5 py-4">Paciente</th>
+          <th class="px-5 py-4">DNI</th>
+          <th class="px-5 py-4">Odontólogo</th>
+          <th class="px-5 py-4">Estado</th>
+          <th class="px-5 py-4 text-right">Acción</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (cita of citas(); track cita.idCita) {
+          <tr class="border-b border-surface-border transition hover:bg-surface-main/70 last:border-0">
+            <td class="px-5 py-4 font-medium text-primary">
+              {{ cita.fechaHora | date:'shortTime' }}
+            </td>
+
+            <td class="px-5 py-4 font-medium text-ink">
+              {{ cita.pacienteNombreCompleto }}
+            </td>
+
+            <td class="px-5 py-4 text-ink-muted">
+              {{ cita.pacienteDni }}
+            </td>
+
+            <td class="px-5 py-4 text-ink-muted">
+              {{ cita.odontologoNombre }}
+            </td>
+
+            <td class="px-5 py-4">
+              <span class="rounded-md border px-2 py-1 text-xs font-medium" [class]="claseEstado(cita.estado)">
+                {{ textoEstado(cita.estado) }}
+              </span>
+            </td>
+
+            <td class="px-5 py-4">
+              <div class="flex justify-end gap-2">
+                @if (cita.estado === 'PENDIENTE') {
+                  <button
+                    type="button"
+                    (click)="cambiarEstado(cita.idCita, 'CONFIRMADA')"
+                    class="rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-white transition hover:bg-primary-hover"
+                  >
+                    Confirmar
+                  </button>
+                }
+
+                @if (cita.estado === 'CONFIRMADA') {
+                  <button
+                    type="button"
+                    (click)="cambiarEstado(cita.idCita, 'EN_SALA')"
+                    class="rounded-lg bg-status-warning px-3 py-1.5 text-xs font-medium text-white transition"
+                  >
+                    Sala espera
+                  </button>
+                }
+
+               @if (cita.estado === 'EN_SALA' && rolActual() !== 'ODONTOLOGO') {
+                <span class="text-xs font-medium text-ink-muted">En sala</span>
+              }
+
+            @if (cita.estado === 'EN_SALA' && rolActual() === 'ODONTOLOGO') {
+            <button
+                type="button"
+                (click)="atenderCita(cita.idCita)"
+                class="rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-white transition hover:bg-primary-hover"
+            >
+                Atender
+            </button>
+            }
+
+                @if (cita.estado === 'EN_CURSO') {
+                  <span class="text-xs font-medium text-ink-muted">Atendiendo</span>
+                }
+
+                @if (cita.estado === 'FINALIZADA') {
+                  <span class="text-xs font-medium text-status-success">Lista para facturar</span>
+                }
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="px-5 py-8 text-center text-ink-muted">
+              No hay citas registradas para hoy.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

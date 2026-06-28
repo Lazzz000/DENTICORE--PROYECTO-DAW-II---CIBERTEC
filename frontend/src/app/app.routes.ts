@@ -29,6 +29,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/admin/admin-layout.component').then(m => m.AdminLayoutComponent),
     children: [
       { path: 'dashboard', loadComponent: () => import('./features/admin/dashboard/dashboard.component').then(m => m.DashboardComponent) },
+      {
+        path: 'citas',
+        loadComponent: () => import('./features/portal/citas/citas.component').then(m => m.CitasComponent)
+      },
       { path: 'pacientes', loadComponent: () => import('./features/admin/pacientes/pacientes.component').then(m => m.PacientesComponent) },
       { path: 'odontograma/:idCita', loadComponent: () => import('./features/admin/odontograma/odontograma.component').then(m => m.OdontogramaComponent) },
       { path: 'facturacion/:idCita', loadComponent: () => import('./features/admin/facturacion/facturacion.component').then(m => m.FacturacionComponent) },
