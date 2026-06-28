@@ -5,6 +5,16 @@
       <p class="text-sm text-ink-muted">Gestión diaria de pacientes y estados de atención</p>
     </div>
 
+        @if (rolActual() !== 'ODONTOLOGO') {
+      <button
+        type="button"
+        (click)="abrirModalNuevaCita()"
+        class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-primary-hover"
+      >
+        Nueva cita
+      </button>
+    }
+
     <button
       type="button"
       (click)="listarCitas()"
@@ -130,21 +140,44 @@
             @if (cita.estado === 'EN_SALA' && rolActual() === 'ODONTOLOGO') {
             <button
                 type="button"
-                (click)="atenderCita(cita.idCita)"
+                (click)="atenderCita(cita)"
                 class="rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-white transition hover:bg-primary-hover"
             >
                 Atender
             </button>
             }
+  
 
-                @if (cita.estado === 'EN_CURSO') {
-                  <span class="text-xs font-medium text-ink-muted">Atendiendo</span>
-                }
+         @if (cita.estado === 'EN_CURSO' && rolActual() === 'ODONTOLOGO') {
+  <button
+    type="button"
+    (click)="irOdontograma(cita)"
+    class="rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-white transition hover:bg-primary-hover"
+  >
+    Odontograma
+  </button>
 
-                @if (cita.estado === 'FINALIZADA') {
-                  <span class="text-xs font-medium text-status-success">Lista para facturar</span>
-                }
-              </div>
+          <button
+            type="button"
+            (click)="cambiarEstado(cita.idCita, 'ATENDIDA')"
+            class="rounded-lg bg-status-success px-3 py-1.5 text-xs font-medium text-white transition"
+          >
+            Finalizar
+          </button>
+        }
+
+        @if (cita.estado === 'ATENDIDA' && rolActual() !== 'ODONTOLOGO') {
+          <span class="text-xs font-medium text-status-success">
+            Lista para facturar
+          </span>
+        }
+
+        @if (cita.estado === 'FINALIZADA') {
+          <span class="text-xs font-medium text-ink-muted">
+            Finalizada
+          </span>
+        }
+                  </div>
             </td>
           </tr>
         } @empty {
@@ -157,4 +190,103 @@
       </tbody>
     </table>
   </div>
+
+  @if (modalNuevaCita()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+    <div class="w-full max-w-xl rounded-2xl border border-surface-border bg-white p-6 shadow-xl">
+      <div class="mb-5 flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-bold text-ink">Nueva cita</h2>
+          <p class="text-sm text-ink-muted">Registra una cita para un paciente y odontólogo.</p>
+        </div>
+
+        <button
+          type="button"
+          (click)="cerrarModalNuevaCita()"
+          class="rounded-lg px-3 py-1 text-sm text-ink-muted hover:bg-surface-main"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="grid gap-4">
+        <div>
+          <label class="mb-1 block text-sm font-medium text-ink">Paciente</label>
+          <select
+            [(ngModel)]="nuevaCita.idPaciente"
+            class="w-full rounded-xl border border-surface-border bg-white px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+          >
+            <option [ngValue]="0">Selecciona paciente</option>
+            @for (paciente of pacientes(); track paciente.id) {
+              <option [ngValue]="paciente.id">
+                {{ paciente.nombres }} {{ paciente.apellidos }} - {{ paciente.dni }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-ink">Odontólogo</label>
+          <select
+            [(ngModel)]="nuevaCita.idOdontologo"
+            class="w-full rounded-xl border border-surface-border bg-white px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+          >
+            <option [ngValue]="0">Selecciona odontólogo</option>
+            @for (odontologo of odontologos(); track odontologo.id) {
+              <option [ngValue]="odontologo.id">
+                {{ odontologo.nombres }} {{ odontologo.apellidos }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-ink">Fecha y hora</label>
+          <input
+            type="datetime-local"
+            [(ngModel)]="nuevaCita.fechaHora"
+            class="w-full rounded-xl border border-surface-border bg-white px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-ink">Adelanto</label>
+          <input
+            type="number"
+            [(ngModel)]="nuevaCita.montoAdelanto"
+            class="w-full rounded-xl border border-surface-border bg-white px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-ink">Referencia</label>
+          <input
+            type="text"
+            [(ngModel)]="nuevaCita.referenciaAdelanto"
+            placeholder="YAPE-001, efectivo, etc."
+            class="w-full rounded-xl border border-surface-border bg-white px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end gap-3">
+        <button
+          type="button"
+          (click)="cerrarModalNuevaCita()"
+          class="rounded-xl border border-surface-border px-4 py-2 text-sm font-medium text-ink hover:bg-surface-main"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="button"
+          (click)="registrarCita()"
+          class="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover"
+        >
+          Registrar cita
+        </button>
+      </div>
+    </div>
+  </div>
+}
 </section>

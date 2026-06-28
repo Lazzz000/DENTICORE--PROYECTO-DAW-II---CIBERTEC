@@ -17,6 +17,9 @@ export interface AgendarCitaRequest {
   idPaciente: number;
   idOdontologo: number;
   fechaHora: string;
+  canalOrigen: string;
+  montoAdelanto: number;
+  referenciaAdelanto?: string;
 }
 
 export interface DetalleOdontograma {

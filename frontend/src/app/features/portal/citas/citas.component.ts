@@ -1,40 +1,59 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Calendar, Clock, LucideAngularModule, RefreshCcw, Search, UserCheck } from 'lucide-angular';
+import { Calendar, Clock, Form, LucideAngularModule, RefreshCcw, Search, UserCheck } from 'lucide-angular';
 import { AuthService } from '../../../core/services/auth.service';
 import { CitaService } from '../../../core/services/cita.service';
-import { CitaListadoDTO, EstadoCita } from '../../../core/models/api.model';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { UsuarioService } from '../../../core/services/usuario.service';
+import { AgendarCitaRequest,CitaListadoDTO,EstadoCita,OdontologoActivo,PacienteActivo } from '../../../core/models/api.model';
 
 @Component({
   selector: 'app-citas',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule,FormsModule],
   templateUrl: './citas.component.html'
 })
 export class CitasComponent {
+
 
     private readonly router = inject(Router);
 
     private readonly authService = inject(AuthService);
     rolActual = this.authService.rol;   
-  private readonly citaService = inject(CitaService);
+    private readonly citaService = inject(CitaService);
 
-  readonly Calendar = Calendar;
-  readonly Clock = Clock;
-  readonly UserCheck = UserCheck;
-  readonly RefreshCcw = RefreshCcw;
-  readonly Search = Search;
+    readonly Calendar = Calendar;
+    readonly Clock = Clock;
+    readonly UserCheck = UserCheck;
+    readonly RefreshCcw = RefreshCcw;
+    readonly Search = Search;
+
+    private readonly usuarioService = inject(UsuarioService);
+
+    pacientes = signal<PacienteActivo[]>([]);
+    odontologos = signal<OdontologoActivo[]>([]);
+    modalNuevaCita = signal(false);
+
+    nuevaCita: AgendarCitaRequest = {
+      idPaciente: 0,
+      idOdontologo: 0,
+      fechaHora: '',
+      canalOrigen: 'RECEPCION',
+      montoAdelanto: 0,
+      referenciaAdelanto: ''
+    };
 
 
 
-  citas = signal<CitaListadoDTO[]>([]);
-  cargando = signal(false);
-  error = signal('');
+    citas = signal<CitaListadoDTO[]>([]);
+    cargando = signal(false);
+    error = signal('');
 
-  ngOnInit(): void {
-    this.listarCitas();
-  }
+    ngOnInit(): void {
+      this.listarCitas();
+      this.cargarCombos();
+    }
 
   listarCitas(): void {
     this.cargando.set(true);
@@ -47,7 +66,7 @@ export class CitasComponent {
     request$.subscribe({
       next: (response) => {
         const citasFiltradas = this.rolActual() === 'ODONTOLOGO'
-        ? response.content.filter(cita => cita.estado === 'EN_SALA')
+        ? response.content.filter(cita => cita.estado === 'EN_SALA' ||cita.estado === 'EN_CURSO')
         : response.content;
 
         this.citas.set(citasFiltradas);
@@ -60,12 +79,14 @@ export class CitasComponent {
     });
   }
 
-    atenderCita(idCita: number): void {
-    this.citaService.actualizarEstado(idCita, 'EN_CURSO').subscribe({
-        next: () => this.router.navigate(['/admin/odontograma', idCita]),
-        error: () => this.error.set('No se pudo iniciar la atención.')
-    });
-    }
+  
+
+atenderCita(cita: CitaListadoDTO): void {
+  this.citaService.actualizarEstado(cita.idCita, 'EN_CURSO').subscribe({
+    next: () => this.listarCitas(),
+    error: () => this.error.set('No se pudo iniciar la atención.')
+  });
+}
 
   cambiarEstado(idCita: number, estado: EstadoCita): void {
     this.citaService.actualizarEstado(idCita, estado).subscribe({
@@ -104,5 +125,61 @@ export class CitasComponent {
       };
 
       return textos[estado];
+    } 
+
+
+    cargarCombos(): void {
+  this.usuarioService.listarPacientesActivos().subscribe({
+    next: (data) => this.pacientes.set(data),
+    error: () => this.error.set('No se pudo cargar pacientes.')
+  });
+
+  this.usuarioService.listarOdontologosActivos().subscribe({
+    next: (data) => this.odontologos.set(data),
+    error: () => this.error.set('No se pudo cargar odontólogos.')
+  });
+}
+
+abrirModalNuevaCita(): void {
+  this.modalNuevaCita.set(true);
+}
+
+cerrarModalNuevaCita(): void {
+  this.modalNuevaCita.set(false);
+}
+
+registrarCita(): void {
+  if (!this.nuevaCita.idPaciente || !this.nuevaCita.idOdontologo || !this.nuevaCita.fechaHora) {
+    this.error.set('Completa paciente, odontólogo y fecha/hora.');
+    return;
+  }
+
+  this.citaService.agendar(this.nuevaCita).subscribe({
+    next: () => {
+      this.cerrarModalNuevaCita();
+      this.nuevaCita = {
+        idPaciente: 0,
+        idOdontologo: 0,
+        fechaHora: '',
+        canalOrigen: 'RECEPCION',
+        montoAdelanto: 0,
+        referenciaAdelanto: ''
+      };
+      this.listarCitas();
+    },
+    error: () => this.error.set('No se pudo registrar la cita.')
+  });
+  }
+
+  irOdontograma(cita: CitaListadoDTO): void {
+  this.router.navigate(['/admin/odontograma', cita.idCita], {
+    queryParams: {
+      idPaciente: cita.idPaciente,
+      paciente: cita.pacienteNombreCompleto,
+      dni: cita.pacienteDni
     }
+  });
+}
+
+
 }
