@@ -140,3 +140,12 @@ export interface DetalleHistorial {
   fechaAtencion: string;
   tipoOdontograma: string;
 }
+
+//Elemento Odontograma
+export interface ElementoOdontograma {
+  id: number;
+  nombre: string;
+  categoria: 'Diagnostico' | 'Tratamiento';
+  aplicaA: 'Diente' | 'Cara';
+  colorHex: string;
+}

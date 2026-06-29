@@ -2,6 +2,7 @@ package com.cibertec.denticore.clinica.controllers;
 
 import com.cibertec.denticore.clinica.dto.request.GuardarOdontogramaRequestDTO;
 import com.cibertec.denticore.clinica.dto.response.DetalleHistorialDTO;
+import com.cibertec.denticore.clinica.dto.response.ElementoOdontogramaDTO;
 import com.cibertec.denticore.clinica.services.OdontogramaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,5 +37,10 @@ public class OdontogramaApiController {
     public ResponseEntity<List<DetalleHistorialDTO>> obtenerHistorialPaciente(
             @PathVariable Integer idPaciente) {
         return ResponseEntity.ok(odontogramaService.obtenerHistorialPaciente(idPaciente));
+    }
+
+    @GetMapping("/elementos")
+    public ResponseEntity<List<ElementoOdontogramaDTO>> listarElementosActivos() {
+        return ResponseEntity.ok(odontogramaService.listarElementosActivos());
     }
 }

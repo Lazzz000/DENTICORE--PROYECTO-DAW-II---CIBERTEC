@@ -3,6 +3,7 @@ package com.cibertec.denticore.clinica.services;
 import com.cibertec.denticore.clinica.dto.request.DetalleOdontogramaDTO;
 import com.cibertec.denticore.clinica.dto.request.GuardarOdontogramaRequestDTO;
 import com.cibertec.denticore.clinica.dto.response.DetalleHistorialDTO;
+import com.cibertec.denticore.clinica.dto.response.ElementoOdontogramaDTO;
 import com.cibertec.denticore.clinica.entities.AtencionClinica;
 import com.cibertec.denticore.clinica.entities.DetalleOdontograma;
 import com.cibertec.denticore.clinica.entities.ElementoOdontograma;
@@ -21,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -95,6 +95,7 @@ public class OdontogramaServiceImpl implements OdontogramaService {
                 .toList();
     }
 
+    
     private DetalleHistorialDTO mapearHistorial(DetalleOdontograma detalle) {
         DetalleHistorialDTO dto = new DetalleHistorialDTO();
         dto.setNumeroPieza(detalle.getNumeroPieza());
@@ -104,4 +105,23 @@ public class OdontogramaServiceImpl implements OdontogramaService {
         dto.setTipoOdontograma(detalle.getOdontograma().getTipo());
         return dto;
     }
+
+        @Override
+        @Transactional(readOnly = true)
+        public List<ElementoOdontogramaDTO> listarElementosActivos() {
+            return elementoOdontogramaRepository.findByActivoTrueOrderByCategoriaAscNombreAsc()
+                    .stream()
+                    .map(this::mapearElemento)
+                    .toList();
+        }
+
+        private ElementoOdontogramaDTO mapearElemento(ElementoOdontograma elemento) {
+            ElementoOdontogramaDTO dto = new ElementoOdontogramaDTO();
+            dto.setId(elemento.getId());
+            dto.setNombre(elemento.getNombre());
+            dto.setCategoria(elemento.getCategoria());
+            dto.setAplicaA(elemento.getAplicaA());
+            dto.setColorHex(elemento.getColorHex());
+            return dto;
+        }
 }
